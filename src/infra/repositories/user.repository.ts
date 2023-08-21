@@ -55,7 +55,27 @@ export class UserRepository extends BaseRepository implements IUserRepository {
     async updateStatus(id: string, status: StatusEnum) {
         await this.entity.update({
             data: {
-                status
+                status,
+                hasToIntegrate: true
+            },
+            where: {
+                id
+            }
+        });
+    }
+
+    async statusToIntegrate() {
+        return (await this.entity.findMany({
+            where: {
+                hasToIntegrate: true
+            }
+        }) as User[]);
+    }
+
+    async updateIntegrateWithCrm(id: string, integrated: boolean) {
+        await this.entity.update({
+            data: {
+                hasToIntegrate: integrated
             },
             where: {
                 id
